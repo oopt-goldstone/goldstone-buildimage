@@ -16,6 +16,11 @@ if [ ! -e /dev/linux-knet-cb ]; then
     mknod /dev/linux-knet-cb c 121 0
 fi
 
+if [ ! -e /dev/linux_ngbde ]; then
+    mknod /dev/linux_ngbde c 120 0
+fi
+
+
 function insert
 {
     insmod /lib/modules/`uname -r`/$1.ko $2 $3 $4 $5 $6 $7
@@ -23,10 +28,11 @@ function insert
 
 function insert_all
 {
-    insert linux-kernel-bde dmasize=64M maxpayload=128
+    insert linux-kernel-bde dmasize=64M maxpayload=128 debug=4
     insert linux-user-bde
-    insert linux-bcm-knet use_rx_skb=1 rx_buffer_size=9238
+    insert linux-bcm-knet use_rx_skb=1 rx_buffer_size=9238 debug=0x5020
     insert linux-knet-cb
+    insert linux_ngbde
 }
 
 function remove
@@ -44,6 +50,7 @@ function remove_all
     remove linux-bcm-knet
     remove linux-user-bde
     remove linux-kernel-bde
+    remove linux_ngbde
 }
 
 if [ "$1" = "remove" ]; then

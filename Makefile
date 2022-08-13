@@ -49,7 +49,8 @@ BUILDER_OPTS = \
   --isolate \
   # THIS LINE INTENTIONALLY LEFT BLANK
 
-ALL_ARCHES = arm64 amd64
+#ALL_ARCHES = arm64 amd64
+ALL_ARCHES = amd64
 
 # Build rule for each architecture.
 define build_arch_template
