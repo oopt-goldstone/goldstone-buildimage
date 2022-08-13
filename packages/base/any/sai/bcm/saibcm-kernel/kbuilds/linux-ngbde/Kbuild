@@ -1,0 +1,43 @@
+THIS_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+
+LINUX_NGBDE_NAME ?= linux_ngbde
+
+obj-m := $(LINUX_NGBDE_NAME).o
+
+#
+# These are the sources that must be built into this module
+#
+SOURCES := \
+           $(SDK)/sdklt/linux/bde/ngbde_main.c \
+           $(SDK)/sdklt/linux/bde/ngbde_kapi.c \
+           $(SDK)/sdklt/linux/bde/ngbde_ioctl.c \
+           $(SDK)/sdklt/linux/bde/ngbde_procfs.c \
+           $(SDK)/sdklt/linux/bde/ngbde_pio.c \
+           $(SDK)/sdklt/linux/bde/ngbde_iio.c \
+           $(SDK)/sdklt/linux/bde/ngbde_paxb.c \
+           $(SDK)/sdklt/linux/bde/ngbde_dma.c \
+           $(SDK)/sdklt/linux/bde/ngbde_intr.c \
+           $(SDK)/sdklt/linux/bde/ngbde_pgmem.c \
+           $(SDK)/sdklt/linux/bde/ngbde_pci_probe.c \
+           $(SDK)/sdklt/linux/bde/ngbde_iproc_probe.c \
+           $(SDK)/sdklt/linux/bde/ngbde_swdev.c
+
+#
+# The kernel build system requires paths relative to the module build directory.
+#
+RELSOURCES := $(foreach source,$(SOURCES),$(shell realpath --relative-to=$(THIS_DIR) $(source)))
+
+$(LINUX_NGBDE_NAME)-y := $(RELSOURCES:.c=.o)
+
+ccflags-y += -I$(SDK)/sdklt/linux/include
+ccflags-y += -I$(SDK)/sdklt/linux/bde
+ccflags-y += -I$(SDK)/sdklt/bcmdrd/include
+
+ccflags-y += -DBCM_ESW_SUPPORT
+ccflags-$(IPROC_CMICD) += -DIPROC_CMICD
+
+# Important -- the KCOM_FILTER_MAX must match the clags in sonic-buildimage/platform/broadcom/saibcm-modules/make/Make.config
+ccflags-y += -DKCOM_FILTER_MAX=1025
+ccflags-y += $(ccflags-extra)
+
+-include $(THIS_DIR)/../Kbuild.$(ARCH)
