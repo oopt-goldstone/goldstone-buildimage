@@ -28,9 +28,9 @@ function insert
 
 function insert_all
 {
-    insert linux-kernel-bde dmasize=64M maxpayload=128 debug=4
+    insert linux-kernel-bde dmasize=32M maxpayload=128 debug=4
     insert linux-user-bde
-    insert linux-bcm-knet use_rx_skb=1 rx_buffer_size=9238 debug=0x5020
+    insert linux-bcm-knet use_rx_skb=1 rx_buffer_size=9238 debug=0x5020 default_mtu=9100
     insert linux-knet-cb
     insert linux_ngbde
 }

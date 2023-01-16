@@ -51,6 +51,7 @@ main(int argc, char* argv)
     sai_port_api_t             *port_api    = NULL;
     sai_router_interface_api_t *rif_api     = NULL;
     sai_virtual_router_api_t   *vrouter_api = NULL;
+    sai_vlan_api_t             *vlan_api = NULL;
 
 #define TRY(_expr)                              \
     do {                                        \
@@ -64,8 +65,14 @@ main(int argc, char* argv)
     TRY(sai_api_query(SAI_API_PORT,             (void **)&port_api));
     TRY(sai_api_query(SAI_API_ROUTER_INTERFACE, (void **)&rif_api));
     TRY(sai_api_query(SAI_API_VIRTUAL_ROUTER,   (void **)&vrouter_api));
+    TRY(sai_api_query(SAI_API_VLAN,             (void **)&vlan_api));
 
     sai_log_set(SAI_API_HOSTIF, SAI_LOG_LEVEL_DEBUG);
+    sai_log_set(SAI_API_SWITCH, SAI_LOG_LEVEL_DEBUG);
+    sai_log_set(SAI_API_PORT, SAI_LOG_LEVEL_DEBUG);
+    sai_log_set(SAI_API_VLAN, SAI_LOG_LEVEL_DEBUG);
+    sai_log_set(SAI_API_VIRTUAL_ROUTER, SAI_LOG_LEVEL_DEBUG);
+    sai_log_set(SAI_API_ROUTER_INTERFACE, SAI_LOG_LEVEL_DEBUG);
 
     sai_mac_t mac = {0xa8, 0x2b, 0xb5, 0x15, 0x26, 0x08};
 
@@ -110,6 +117,12 @@ main(int argc, char* argv)
     for ( ; i < num_port; i++ ) {
         printf("%d: %lx\n", i, l[i]);
     }
+
+    sai_object_id_t vlan_oid;
+    attrs[0].id = SAI_VLAN_ATTR_VLAN_ID;
+    attrs[0].value.u16 = 100;
+
+    TRY(vlan_api->create_vlan(&vlan_oid, switch_id, 1, attrs));
 
     attrs[0].id = SAI_VIRTUAL_ROUTER_ATTR_SRC_MAC_ADDRESS;
     memcpy(&attrs[0].value.mac, &mac, sizeof(sai_mac_t));
