@@ -10,12 +10,14 @@ APPS = [
     "north-notif",
     "north-netconf",
     "north-snmp",
+    "north-gnmi",
     "south-sonic",
     "south-gearbox",
     "south-dpll",
     "south-tai",
     "south-onlp",
     "xlate-oc",
+    "system-telemetry",
 ]
 
 

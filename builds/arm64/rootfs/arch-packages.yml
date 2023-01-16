@@ -25,3 +25,5 @@
 - gs-snmp:arm64
 - gs-xlate-oc:arm64
 - python3.10:arm64
+- gs-north-gnmi:arm64
+- gs-system-telemetry:arm64
