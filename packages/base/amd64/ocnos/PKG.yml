@@ -6,7 +6,6 @@ packages:
     changelog: Initial
     support: goldstone-support-group@ipinfusion.com
     summary: ocnos
-    after-install: $__DIR__/after-install.sh
     before-remove: $__DIR__/before-remove.sh
     depends:
     - k3s
