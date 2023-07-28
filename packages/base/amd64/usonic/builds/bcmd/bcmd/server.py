@@ -49,12 +49,14 @@ async def temp_loop(output_dir, interval):
                 f.write(f"{int(v[1] * 1000)}\n")
 
         with open(f"{output_dir}/temp_avg", "w") as f:
-            v = sum(v[0] * 1000 for v in d) // len(d)
-            f.write(f"{int(v)}\n")
+            if len(d) != 0:
+                v = sum(v[0] * 1000 for v in d) // len(d)
+                f.write(f"{int(v)}\n")
 
         with open(f"{output_dir}/temp_max_peak", "w") as f:
-            v = max(v[1] * 1000 for v in d)
-            f.write(f"{int(v)}\n")
+            if len(d) != 0:
+                v = max(v[1] * 1000 for v in d)
+                f.write(f"{int(v)}\n")
 
         await asyncio.sleep(interval)
 

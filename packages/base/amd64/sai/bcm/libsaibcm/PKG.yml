@@ -1,7 +1,3 @@
-prerequisites:
-  packages:
-  - 'sonic:all'
-
 packages:
   - name: libsaibcm
     arch: amd64

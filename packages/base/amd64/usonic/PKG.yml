@@ -15,4 +15,4 @@ packages:
         builds/usonic.service: /etc/systemd/system/
         builds/usonic.sh: /usr/bin/
         builds/bcm.sh: /etc/profile.d/
-        builds/libsai.so: /var/lib/usonic/lib/
+#builds/libsai.so: /var/lib/usonic/lib/
