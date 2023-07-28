@@ -30,7 +30,5 @@
 {"port": 1,   "first_lane": 1,   "lane_num": 4, "alias_prefix": "QSFP29", "index": 113, "speed": 100000, "interface-type": "cr"},
 {"port": 5,   "first_lane": 5,   "lane_num": 4, "alias_prefix": "QSFP30", "index": 117, "speed": 100000, "interface-type": "cr"},
 {"port": 9,   "first_lane": 9,   "lane_num": 4, "alias_prefix": "QSFP31", "index": 121,  "speed": 100000, "interface-type": "cr"},
-{"port": 13,  "first_lane": 13,  "lane_num": 4, "alias_prefix": "QSFP32", "index": 125,  "speed": 100000, "interface-type": "cr"},
-{"port": 100, "first_lane": 131, "lane_num": 2, "alias_prefix": "CPU1", "index": 130, "speed": 10000},                                             
-{"port": 66,  "first_lane": 129, "lane_num": 2, "alias_prefix": "CPU2", "index": 132, "speed": 10000} 
+{"port": 13,  "first_lane": 13,  "lane_num": 4, "alias_prefix": "QSFP32", "index": 125,  "speed": 100000, "interface-type": "cr"}
 ]
