@@ -1,0 +1,54 @@
+THIS_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+
+LINUX_NGKNET_NAME ?= linux_ngknet
+
+obj-m := $(LINUX_NGKNET_NAME).o
+
+#
+# These are the sources that must be built into this module
+#
+SOURCES := \
+           $(SDK)/sdklt/linux/knet/bcm56780_a0_pdma_attach.c \
+           $(SDK)/sdklt/linux/knet/bcm56880_a0_pdma_attach.c \
+           $(SDK)/sdklt/linux/knet/bcm56990_a0_pdma_attach.c \
+           $(SDK)/sdklt/linux/knet/bcm56990_b0_pdma_attach.c \
+           $(SDK)/sdklt/linux/knet/bcm56995_a0_pdma_attach.c \
+           $(SDK)/sdklt/linux/knet/bcm56996_a0_pdma_attach.c \
+           $(SDK)/sdklt/linux/knet/bcm56996_b0_pdma_attach.c \
+           $(SDK)/sdklt/linux/knet/bcm56998_a0_pdma_attach.c \
+           $(SDK)/sdklt/linux/knet/bcmcnet_cmicd_pdma_hw.c \
+           $(SDK)/sdklt/linux/knet/bcmcnet_cmicd_pdma_rxtx.c \
+           $(SDK)/sdklt/linux/knet/bcmcnet_cmicx_pdma_hw.c \
+           $(SDK)/sdklt/linux/knet/bcmcnet_cmicx_pdma_rxtx.c \
+           $(SDK)/sdklt/linux/knet/bcmcnet_core.c \
+           $(SDK)/sdklt/linux/knet/bcmcnet_dev.c \
+           $(SDK)/sdklt/linux/knet/bcmcnet_rxtx.c \
+           $(SDK)/sdklt/linux/knet/ngknet_buff.c \
+           $(SDK)/sdklt/linux/knet/ngknet_callback.c \
+           $(SDK)/sdklt/linux/knet/ngknet_extra.c \
+           $(SDK)/sdklt/linux/knet/ngknet_linux.c \
+           $(SDK)/sdklt/linux/knet/ngknet_main.c \
+           $(SDK)/sdklt/linux/knet/ngknet_procfs.c \
+           $(SDK)/sdklt/linux/knet/ngknet_ptp.c
+
+#
+# The kernel build system requires paths relative to the module build directory.
+#
+RELSOURCES := $(foreach source,$(SOURCES),$(shell realpath --relative-to=$(THIS_DIR) $(source)))
+
+$(LINUX_NGKNET_NAME)-y := $(RELSOURCES:.c=.o)
+
+ccflags-y += -I$(SDK)/sdklt/shr/include
+ccflags-y += -I$(SDK)/sdklt/bcmdrd/include
+ccflags-y += -I$(SDK)/sdklt/linux/include
+ccflags-y += -I$(SDK)/sdklt/linux/knet/include
+ccflags-y += -I$(SDK)/sdklt/linux/knet
+
+ccflags-y += -DBCM_ESW_SUPPORT
+ccflags-$(IPROC_CMICD) += -DIPROC_CMICD
+
+# Important -- the KCOM_FILTER_MAX must match the clags in sonic-buildimage/platform/broadcom/saibcm-modules/make/Make.config
+ccflags-y += -DKCOM_FILTER_MAX=1025
+ccflags-y += $(ccflags-extra)
+
+-include $(THIS_DIR)/../Kbuild.$(ARCH)

@@ -12,11 +12,13 @@ APPS = [
     "north-snmp",
     "north-gnmi",
     "south-sonic",
+    "south-ocnos",
     "south-gearbox",
     "south-dpll",
     "south-tai",
     "south-onlp",
     "xlate-oc",
+    "xlate-or",
     "system-telemetry",
 ]
 
