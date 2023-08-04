@@ -1,4 +1,4 @@
-USONIC_IMAGES ?= docker.io/nlpldev/usonic-cli:latest ghcr.io/microsonic/usonic-debug:202205 docker.io/bitnami/kubectl:latest
+USONIC_IMAGES ?= docker.io/nlpldev/usonic-cli:latest ghcr.io/oopt-goldstone/usonic-debug:202205 docker.io/bitnami/kubectl:latest
 BCMD_IMAGE ?= bcmd:latest
 
 .PHONY: bcmd
