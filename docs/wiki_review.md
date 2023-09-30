@@ -3,27 +3,42 @@
 Goldstone is a reference open-source Network Operating System (NOS) for disaggregated open optical networking hardware. Goldstone is developed as part of Telcom-infra-project’s [OOPT-NOS (Open Optical and Packet Transport)](https://telecominfraproject.com/oopt/) software project group. It is mainly aimed at accelerating the adoption of disaggregated networking optical systems.
 
 Several open-source components developed as part of [OCP(Open Compute Project)](https://www.opencompute.org/projects/networking), [TIP(Telcom Infra project)](https://telecominfraproject.com/oopt/) and [ONL(Open Network Linux)](http://opennetlinux.org/) are used as the basic building blocks of Goldstone NOS.
-1. ONL &emsp; &ensp; &ensp; &nbsp;: ONL is used as base operating system, which has support for wide range of open network devices.
-2. SAI &emsp; &ensp; &ensp; &ensp; : Abstraction layer to control/Manage forwarding ASICs/NPUs. 
-3. SONIC &emsp; &ensp; : To provision switching and routing support for networking platforms.
-4. TAI &emsp; &ensp; &ensp; &ensp; : Abstraction layer to control/Manage coherent optical Hardware components.
+1. ONL &emsp; &ensp; &ensp; &nbsp;: [ONL](https://github.com/oopt-goldstone/OpenNetworkLinux/tree/aa72eb5e1b1ba717033e9072afc5b488659a9bf8) is used as base OS and build-system in Goldstone to support wide range of open networking hardware.
+2. SONIC &emsp; &ensp; : To provision switching and routing support for networking platforms.
+3. SAI &emsp; &ensp; &ensp; &ensp; : Hardware Abstraction layer to control/manage forwarding ASICs/NPUs.
+4. TAI &emsp; &ensp; &ensp; &ensp; : Hardware abstraction layer to control/manage coherent optics of CFP2ACO and CFP2DCO.
 5. Docker &emsp; &nbsp; : Simplifies the process of building, running, managing, and distributing applications.
 6. Kubernetes : Enables containerized application management.
 
 
 # System-Architecture
 
-![image](https://user-images.githubusercontent.com/36222193/161417226-5466d422-493b-423f-ac89-8b1f2e0333cc.png)
+![image](https://github.com/HarshaF1/goldstone-buildimage/assets/36222193/e15ebe79-f438-41b9-b7ad-e5be89bed652)
 
 This modular architecture brings in the ease of assimilating new technologies and feature-advancements of open-source projects mentioned above into Goldstone-NOS. And also enables Goldstone to extend its support for other networking devices [L0/L1 Transponders, ROADMs.. etc.] in future.
 
-### _Unified Management Layer_
-The unified management layer provides a common APIs towards different north bound management protocols like CLI, netconf, restconf, gNMI SNMP etc.
+### _Goldstone Management Layer_
+The Goldstone management layer provides a common APIs towards different north bound management protocols like CLI, netconf, restconf, gNMI SNMP etc.
 
 ![image](https://github.com/HarshaF1/goldstone-buildimage/assets/36222193/ead19580-02eb-4102-a77b-09f4a8b73c81)
 
 Goldstone uses 'Sysrepo', a library for configuration and monitoring based on the YANG model as a core component of the management layer.
-Unified-management-layer's architecture is such that each component that caters to the northbound API is an independent process and does not require changes to existing parts when adding a new northbound API.
+Goldstone-management-layer's architecture is such that each component that caters to the northbound API is an independent process and does not require changes to existing parts when adding a new northbound API.
+Goldstone-mgmt framework uses sysrepo as a central configuration infrastructure and has four kinds of daemons which interact with sysrepo datastore.
+- north daemon
+    - provides northbound API (CLI, NETCONF, SNMP, RESTCONF, gNMI etc..)
+    - source code under [`src/north`](https://github.com/oopt-goldstone/goldstone-mgmt/tree/master/src/north)
+- south daemon
+    - control/monitor hardware (ONLP, SONiC/SAI, TAI, System)
+    - uses native YANG models to interact with sysrepo
+    - source code under [`src/south`](https://github.com/oopt-goldstone/goldstone-mgmt/tree/master/src/south)
+- translation daemon
+    - translator of the standarized YANG models and Goldstone YANG models
+    - source code under [`src/xlate`](https://github.com/oopt-goldstone/goldstone-mgmt/tree/master/src/xlate)
+- system daemon
+    - provides system utility services for north daemons
+    - optionally uses native YANG models to interact with sysrepo
+    - source code under [`src/system`](https://github.com/oopt-goldstone/goldstone-mgmt/tree/master/src/system)
 
 More information <[here](https://github.com/oopt-goldstone/goldstone-mgmt)>.
 
@@ -53,16 +68,21 @@ The Switch Abstraction Interface defines the API to provide a vendor-independent
 
 More information <[here](https://github.com/opencomputeproject/SAI/wiki)>.
 
+### _OcNOS_
+Containarized OcNOS is a commercial offering from Ipinfusion that can be used as a Ethernet-asic-controller instead of SONiC + SAI. OcNOS offers an extensive suite of switching(L2) and routing(L3) protocols and also provides data-plane layer to control/manage the switch-asic.
+
 # Supported platforms
 
 #### Following is the list of platforms that supports Goldstone NOS.
 
-| S.No | Vendor   | Platform                      | ASIC Vendor | Switch ASIC | Port Configuration | Comments                           |
-| ---- | -------- | ----------------------------- | ----------- | ----------- | ------------------ | ---------------------------------- |
-| 1    | Wistron  | WTP-01-02-00 (Galileo 1)      | Broadcom    | TH+         |                    | ACO, DCO, QSFP28 PIU are supported |
-| 2    | Wistron  | WTP-01-C1-00 (Galileo Flex T) | Broadcom    | TH+         |                    |                                    |
-| 3    | Edgecore | AS7716-24SC/XC  (Cassini)     | Broadcom    | TH+         | 16x100G + 8x200G   | only ACO PIU is supported          |
-| 4    | Edgecore | AS7716-32X                    | Broadcom    | TH+         | 32x100G            |                                    |
+| S.No | Vendor   | Platform                      | ASIC Vendor | Switch ASIC | Port Configuration      | Comments                           |
+| ---- | -------- | ----------------------------- | ----------- | ----------- | ----------------------- | ---------------------------------- |
+| 1    | Wistron  | WTP-01-02-00 (Galileo 1)      | Broadcom    | TH+         |                         | ACO, DCO, QSFP28 PIU are supported |
+| 2    | Wistron  | WTP-01-C1-00 (Galileo Flex T) | Broadcom    | TH+         |                         |                                    |
+| 3    | Edgecore | AS7716-24SC/XC  (Cassini)     | Broadcom    | TH+         | 16x100G + 8x200G        | only ACO PIU is supported          |
+| 4    | Edgecore | AS7716-32X                    | Broadcom    | TH+         | 32x100G                 |                                    |
+| 5    | Edgecore | AS7316-26XB (CSR320)          | Broadcom    | Qumran-AX   | 2x100G + 8x25G + 16x10G |                                    |
+| 4    | Edgecore | AS7946-30XB (AGR400)          | Broadcom    | Qumran2C    | 4x400G + 22x100G + 4x25G|                                    |
 
 
 # Building Guide
